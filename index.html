@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <title>Complete Cupboard Configurator</title>
-  <link rel="preload" href="Twin%20Bench.glb" as="fetch" crossorigin>
+  <link rel="preload" href="Twin%20Bench.glb" as="fetch" crossorigin />
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js"></script>
   <style>
     :root {
@@ -50,11 +50,6 @@
       min-height: 100vh;
       background: var(--page-bg);
       padding: 0 0 32px;
-      box-shadow: none;
-    }
-
-    .topbar {
-      display: none !important;
     }
 
     .product-layout {
@@ -70,7 +65,6 @@
       margin: 0 auto 22px;
       text-align: center;
       max-width: 820px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: clamp(2.1rem, 2.6vw, 2.8rem);
       line-height: 1.02;
       letter-spacing: -0.04em;
@@ -388,45 +382,22 @@
     @media (max-width: 900px) {
       .page-shell { padding: 12px 12px 24px; }
       .product-layout { padding: 18px 14px 24px; }
-      .product-grid {
-        grid-template-columns: 1fr;
-      }
-      .viewer-card {
-        order: 1;
-      }
-      .product-info {
-        order: 2;
-        padding-top: 0;
-        grid-column: 1;
-      }
-      #product-description {
-        order: 3;
-      }
-      #core-features {
-        order: 4;
-      }
-      .configurator-panel {
-        max-width: 100%;
-      }
-      .product-description,
-      .core-features {
-        max-width: 100%;
-      }
-      .viewer-box {
-        aspect-ratio: 1 / 1.08;
-        min-height: 220px;
-        max-height: 58vh;
-      }
-      .product-title {
-        margin-bottom: 16px;
-      }
+      .product-grid { grid-template-columns: 1fr; }
+      .viewer-card { order: 1; }
+      .product-info { order: 2; padding-top: 0; grid-column: 1; }
+      #product-description { order: 3; }
+      #core-features { order: 4; }
+      .configurator-panel { max-width: 100%; }
+      .product-description, .core-features { max-width: 100%; }
+      .viewer-box { aspect-ratio: 1 / 1.08; min-height: 220px; max-height: 58vh; }
+      .product-title { margin-bottom: 16px; }
     }
   </style>
 </head>
 <body>
   <div class="page-shell">
     <main class="product-layout">
-      <h1 class="product-title">The ewe -<br>furniture only</h1>
+      <h1 class="product-title">The belted ewe -<br>furniture only</h1>
 
       <div class="product-grid">
         <section class="viewer-card" aria-label="Product viewer section">
@@ -511,8 +482,7 @@
 
   <div id="form-modal" role="dialog" aria-modal="true" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.6); z-index:9999;">
     <div id="form-modal-card" style="width:92%; max-width:960px; height:86%; background:#fff; border-radius:10px; overflow:hidden; position:relative; box-shadow:0 20px 40px rgba(0,0,0,0.4);">
-      <button id="form-modal-close" aria-label="Close form" style="position:absolute; right:12px; top:12px; z-index:5; padding:8px 10px; border-radius:6px; border:1px solid #ddd; background:#fff;">✕</button>
-      <div id="form-modal-spinner" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.95));">Loading…</div>
+      <button id="form-modal-close" aria-label="Close form" style="position:absolute; right:12px; top:12px; z-index:5; padding:8px 10px; border-radius:6px; border:1px solid #ddd; background:#fff; cursor:pointer;">Close</button>
       <iframe id="form-modal-iframe" src="" frameborder="0" title="Quote form" style="width:100%; height:100%; border:0; display:block;"></iframe>
     </div>
   </div>
@@ -539,6 +509,23 @@
       'Ewe.glb': 'https://blacksheepcampers.wixforms.com/f/7516869375056413788',
       'Belted%20Ewe.glb': 'https://blacksheepcampers.wixforms.com/f/7516871286258140321'
     };
+
+    const MODEL_DEFAULT_ORBIT = {
+      'Twin%20Bench.glb': '135deg 75deg auto',
+      'Twin%20Bench%20Cushion.glb': '135deg 75deg auto',
+      'Ewe.glb': '135deg 75deg auto',
+      'Ewe%20Cushion.glb': '135deg 75deg auto',
+      'Belted%20Ewe.glb': '135deg 75deg auto',
+      'Belted%20Ewe%20Cushion.glb': '135deg 75deg auto'
+    };
+
+    const MODEL_CUSHION_FILES = {
+      'Twin%20Bench.glb': 'Twin%20Bench%20Cushion.glb',
+      'Ewe.glb': 'Ewe%20Cushion.glb',
+      'Belted%20Ewe.glb': 'Belted%20Ewe%20Cushion.glb'
+    };
+
+    const CUSHION_VARIANT_SWAP_MODELS = new Set(['Twin%20Bench%20Cushion.glb']);
 
     const PRICE_FALLBACK = {
       'Furniture Only': {
@@ -570,25 +557,6 @@
         }
       }
     };
-
-    const MODEL_DEFAULT_ORBIT = {
-      'Twin%20Bench.glb': '135deg 75deg auto',
-      'Twin%20Bench%20Cushion.glb': '135deg 75deg auto',
-      'Ewe.glb': '135deg 75deg auto',
-      'Ewe%20Cushion.glb': '135deg 75deg auto',
-      'Belted%20Ewe.glb': '135deg 75deg auto',
-      'Belted%20Ewe%20Cushion.glb': '135deg 75deg auto'
-    };
-
-    const MODEL_CUSHION_FILES = {
-      'Twin%20Bench.glb': 'Twin%20Bench%20Cushion.glb',
-      'Ewe.glb': 'Ewe%20Cushion.glb',
-      'Belted%20Ewe.glb': 'Belted%20Ewe%20Cushion.glb'
-    };
-
-    const CUSHION_VARIANT_SWAP_MODELS = new Set([
-      'Twin%20Bench%20Cushion.glb'
-    ]);
 
     const DEFAULT_ORBIT = MODEL_DEFAULT_ORBIT[selectedModel];
     let initialLoadDone = false;
@@ -755,10 +723,7 @@
       }
 
       if (variant && typeof variant === 'object') {
-        return {
-          price: variant.price,
-          description: variant.description || ''
-        };
+        return { price: variant.price, description: variant.description || '' };
       }
 
       return { price: undefined, description: '' };
@@ -801,11 +766,47 @@
       }
     }
 
-    function updateCoreFeaturesVisibility() {
+    async function loadFeaturesForLayout(layoutModel) {
+      const featureFiles = {
+        'Twin%20Bench.glb': 'data/features/twin-bench.csv',
+        'Ewe.glb': 'data/features/ewe.csv',
+        'Belted%20Ewe.glb': 'data/features/belted-ewe.csv'
+      };
+
+      const csvPath = featureFiles[layoutModel] || 'data/features/ewe.csv';
+
+      try {
+        const response = await fetch(csvPath);
+        if (!response.ok) return [];
+        const csvText = await response.text();
+
+        return csvText
+          .split(/\r?\n/)
+          .map((line) => line.trim())
+          .filter(Boolean)
+          .slice(1)
+          .map((line) => line.replace(/^"|"$/g, '').trim())
+          .filter(Boolean);
+      } catch (error) {
+        console.warn('Could not load feature CSV:', csvPath, error);
+        return [];
+      }
+    }
+
+    async function updateCoreFeaturesVisibility() {
       const coreFeaturesBox = document.getElementById('core-features');
       if (!coreFeaturesBox) return;
 
-      if (selectedPackage === 'Full Conversion') {
+      if (selectedPackage !== 'Full Conversion') {
+        coreFeaturesBox.hidden = true;
+        coreFeaturesBox.style.display = 'none';
+        coreFeaturesBox.innerHTML = '';
+        return;
+      }
+
+      const features = await loadFeaturesForLayout(selectedModel);
+
+      if (!features.length) {
         coreFeaturesBox.innerHTML = `
           <div class="core-features-title">Core Features:</div>
           <ul class="core-features-list">
@@ -820,17 +821,21 @@
             <li>A u-shape seating area that folds out into a large bed, big enough for two. With plenty of storage, and even a designated area to have your own portable toilet.</li>
             <li>A diesel heater</li>
             <li>Cushions with your choice of fabric</li>
-            <li>A charging system to keep you batteries charged up, whether that is utilising your vans alternator via DC-DC charging, solar panels, shore power via a hook-up point, or all of the possibilities available in a bespoke conversion.</li>
+            <li>A charging system to keep you batteries charged up, whether that is utilising your vans alternator via DC-DC charging, solar panels, shore power via a hook-up point, or all of the above</li>
             <li>An electrical system to suit your needs, including 12V charging points, ceiling lights, reading lights and 240V plug sockets.</li>
           </ul>
         `;
-        coreFeaturesBox.hidden = false;
-        coreFeaturesBox.style.display = 'block';
       } else {
-        coreFeaturesBox.hidden = true;
-        coreFeaturesBox.style.display = 'none';
-        coreFeaturesBox.innerHTML = '';
+        coreFeaturesBox.innerHTML = `
+          <div class="core-features-title">Core Features:</div>
+          <ul class="core-features-list">
+            ${features.map((item) => `<li>${item}</li>`).join('')}
+          </ul>
+        `;
       }
+
+      coreFeaturesBox.hidden = false;
+      coreFeaturesBox.style.display = 'block';
     }
 
     function getActiveModelFile() {
@@ -969,7 +974,7 @@
     }
 
     document.querySelectorAll('.package-btn').forEach((button) => {
-      button.addEventListener('click', (e) => {
+      button.addEventListener('click', async (e) => {
         const nextPackage = e.target.getAttribute('data-package');
         if (!nextPackage) return;
         selectedPackage = nextPackage;
@@ -980,13 +985,13 @@
         updateProductTitle();
         updatePriceDisplay();
         updateDescription();
-        updateCoreFeaturesVisibility();
+        await updateCoreFeaturesVisibility();
         updateConfigurator();
       });
     });
 
     document.querySelectorAll('.layout-btn').forEach((button) => {
-      button.addEventListener('click', (e) => {
+      button.addEventListener('click', async (e) => {
         const nextModel = e.target.getAttribute('data-size');
         selectedModel = nextModel;
         syncModelButtons(selectedModel);
@@ -998,10 +1003,33 @@
           savedOrbitToRestore = null;
         }
 
-        updateConfigurator();
         updateProductTitle();
         updatePriceDisplay();
         updateDescription();
+        await updateCoreFeaturesVisibility();
+        updateConfigurator();
+      });
+    });
+
+    document.querySelectorAll('.door-btn').forEach((button) => {
+      button.addEventListener('click', (e) => {
+        const nextDoor = e.target.getAttribute('data-door');
+        if (!nextDoor) return;
+        selectedDoor = nextDoor;
+        selectedMaterial = nextDoor === 'Hexa ply' ? 'Hexa ply' : 'Laminate';
+        syncDoorButtons();
+        applyVariant(selectedDoor);
+      });
+    });
+
+    document.querySelectorAll('.cushion-btn').forEach((button) => {
+      button.addEventListener('click', (e) => {
+        const nextCushion = e.target.getAttribute('data-cushion');
+        if (!nextCushion) return;
+        selectedCushions = nextCushion;
+        updatePriceDisplay();
+        updateDescription();
+        updateConfigurator();
       });
     });
 
@@ -1016,83 +1044,35 @@
       });
     });
 
-    document.querySelectorAll('.cushion-btn').forEach((button) => {
-      button.addEventListener('click', (e) => {
-        const cushionValue = e.target.getAttribute('data-cushion');
-        if (!cushionValue || (selectedPackage === 'Full Conversion' && cushionValue === 'Without%20Cushions')) return;
-        selectedCushions = cushionValue;
-        syncCushionButtons();
-        updateConfigurator();
-        updatePriceDisplay();
-        updateDescription();
-      });
-    });
-
-    document.querySelectorAll('.door-btn').forEach((button) => {
-      button.addEventListener('click', (e) => {
-        const clickedDoor = e.target.getAttribute('data-door');
-        if (!clickedDoor) return;
-
-        selectedDoor = clickedDoor;
-        selectedMaterial = getMaterialFromDoor(clickedDoor);
-        syncDoorButtons();
-        applyVariant(selectedDoor);
-        updatePriceDisplay();
-        updateDescription();
-      });
-    });
-
-    document.querySelectorAll('[data-rotate]').forEach((button) => {
-      button.addEventListener('click', (e) => {
-        const direction = e.currentTarget.getAttribute('data-rotate');
-        const deg = direction === 'left' ? -45 : 45;
-        try {
-          const orbit = modelViewer.cameraOrbit || DEFAULT_ORBIT || '135deg 75deg auto';
-          const parts = orbit.trim().split(/\s+/);
-          const azMatch = parts[0].match(/(-?[0-9.]+)deg/);
-          if (!azMatch) return;
-          let azValue = parseFloat(azMatch[1]);
-          azValue = (azValue + deg) % 360;
-          if (azValue < 0) azValue += 360;
-          modelViewer.cameraOrbit = `${azValue}deg ${parts[1]} ${parts[2]}`;
-          userHasManualView = true;
-          savedOrbitToRestore = modelViewer.cameraOrbit;
-        } catch (err) {
-          console.warn('rotateBy error:', err);
-        }
-      });
-    });
-
     document.getElementById('request-quote-btn')?.addEventListener('click', () => {
       const modal = document.getElementById('form-modal');
       const iframe = document.getElementById('form-modal-iframe');
-      const spinner2 = document.getElementById('form-modal-spinner');
-
-      if (!modal || !iframe || !spinner2) return;
-
       iframe.src = getFormUrlForSelectedModel();
       modal.style.display = 'flex';
-      iframe.onload = () => {
-        spinner2.style.display = 'none';
-      };
     });
 
     document.getElementById('form-modal-close')?.addEventListener('click', () => {
       const modal = document.getElementById('form-modal');
-      const iframe = document.getElementById('form-modal-iframe');
-      const spinner2 = document.getElementById('form-modal-spinner');
-
-      if (!modal || !iframe || !spinner2) return;
-
       modal.style.display = 'none';
-      iframe.src = '';
-      spinner2.style.display = 'flex';
+      document.getElementById('form-modal-iframe').src = '';
+    });
+
+    document.querySelectorAll('[data-rotate]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const direction = button.getAttribute('data-rotate');
+        rotateBy(direction === 'left' ? -30 : 30);
+      });
     });
 
     updateProductTitle();
     updatePriceDisplay();
     updateDescription();
     updateCoreFeaturesVisibility();
+    syncPackageButtons(selectedPackage);
+    syncModelButtons(selectedModel);
+    syncDoorButtons();
+    syncCushionButtons();
+    syncWheelbaseButtons();
     updateConfigurator();
   </script>
 </body>
